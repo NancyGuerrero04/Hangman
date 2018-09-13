@@ -1,3 +1,6 @@
+import java.awt.Frame;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -5,12 +8,13 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class Hangman {
+public class Hangman implements KeyListener {
 	int lives;
 	JFrame f = new JFrame();
 	JPanel p = new JPanel();
@@ -18,7 +22,7 @@ public class Hangman {
 	JLabel livesLabel = new JLabel();
 	JLabel solvedLabel = new JLabel();
 	JLabel wordLabel = new JLabel();
-	static Stack<String> wordStack = new Stack<>(); //Static can 
+	static Stack<String> wordStack = new Stack<>(); // Contains all the words from "instructions.txt"
 
 	public static void main(String[] args) {
 		String numOfWordsString = JOptionPane
@@ -61,26 +65,61 @@ public class Hangman {
 	Hangman() {
 
 		f.add(p);
+
+		
+		
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		p.add(guessLabel);
 		p.add(livesLabel);
 		p.add(solvedLabel);
 		p.add(wordLabel);
 
-		f.pack();
 		f.setVisible(true);
+		f.pack();
+		f.setSize(600,600);
+		
 
-		guessLabel.setText("Guess a letter.");
-		livesLabel.setText("You have ");
-		wordLabel.setText("You have solved ");
+	
 
-		String pop = wordStack.pop();
-		int popChar = 4;
-		String blankLine = "";
-
-		for (int j = 0; j < popChar; j++) {
-			blankLine += "_ ";
+		String currentWord = wordStack.pop(); // Word that the user will try to guess
+		int numChar = currentWord.length(); // This is the number of characters (useful when using "_")
+		String hiddenWord = "";
+		System.out.println(""+currentWord);
+		for(int i=0; i< numChar; i++) {
+			hiddenWord+="_ ";
+			
+			
 		}
-		wordLabel.setText("" + blankLine);
-		System.out.println(blankLine);
+		
+		guessLabel.setText("Guess a letter.");
+		wordLabel.setText(hiddenWord);
+		livesLabel.setText("You have");
+		wordLabel.setText("You have solved");
+		
+	}
+
+
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		//if()
+		
 	}
 }
