@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Hangman implements KeyListener {
-	int lives;
+	int lives = 10;
 	JFrame f = new JFrame();
 	JPanel p = new JPanel();
 	JLabel guessLabel = new JLabel();
@@ -24,12 +24,16 @@ public class Hangman implements KeyListener {
 	JLabel wordLabel = new JLabel();
 	static Stack<String> wordStack = new Stack<>(); // Contains all the words from "instructions.txt"
 
+	String currentWord = wordStack.pop(); // Word that the user will try to guess
+	int numChar = currentWord.length(); // This is the number of characters (useful when using "_")
+	String hiddenWord = "";
+
 	public static void main(String[] args) {
 		String numOfWordsString = JOptionPane
 				.showInputDialog("Welcome to Hangman! How many rounds would you like to play?");
 		int numOfWordsInt = Integer.parseInt(numOfWordsString); // Changes the number string into an number int
 		ArrayList<String> wordList = new ArrayList<>(numOfWordsInt);
-		
+
 		// This will read each word from the "instructions.txt" and adds the words into
 		// "wordList"
 		try {
@@ -59,15 +63,11 @@ public class Hangman implements KeyListener {
 		Hangman hangman = new Hangman();
 	}
 
-
-
 	// Constructor for my UI
 	Hangman() {
 
 		f.add(p);
 
-		
-		
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		p.add(guessLabel);
 		p.add(livesLabel);
@@ -76,50 +76,51 @@ public class Hangman implements KeyListener {
 
 		f.setVisible(true);
 		f.pack();
-		f.setSize(600,600);
-		
+		f.setSize(600, 600);
 
-	
+		System.out.println("" + currentWord);
+		for (int i = 0; i < numChar; i++) {
+			hiddenWord += "_ ";
 
-		String currentWord = wordStack.pop(); // Word that the user will try to guess
-		int numChar = currentWord.length(); // This is the number of characters (useful when using "_")
-		String hiddenWord = "";
-		System.out.println(""+currentWord);
-		for(int i=0; i< numChar; i++) {
-			hiddenWord+="_ ";
-			
-			
 		}
-		
+
 		guessLabel.setText("Guess a letter.");
 		wordLabel.setText(hiddenWord);
 		livesLabel.setText("You have");
 		wordLabel.setText("You have solved");
-		
+
 	}
-
-
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		//if()
-		
+		char keyPressed = e.getKeyChar();
+		String newHiddenWord = ""; 
+
+		if (currentWord.contains(Character.toString(keyPressed)) == true) {
+			for (int i = 0; i < numChar; i++) {
+				if(currentWord.charAt(i) == keyPressed) {
+					newHiddenWord+=keyPressed; 
+					l.set(newHiddenWord);
+				}
+			}
+
+		} else {
+			l.set(newHiddenWord);
+			lives--;
+		}
 	}
+
 }
