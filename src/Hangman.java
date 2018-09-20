@@ -29,7 +29,7 @@ public class Hangman implements KeyListener {
 				.showInputDialog("Welcome to Hangman! How many rounds would you like to play?");
 		int numOfWordsInt = Integer.parseInt(numOfWordsString); // Changes the number string into an number int
 		ArrayList<String> wordList = new ArrayList<>(numOfWordsInt);
-
+		
 		// This will read each word from the "instructions.txt" and adds the words into
 		// "wordList"
 		try {
