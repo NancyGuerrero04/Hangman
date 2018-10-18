@@ -22,10 +22,10 @@ public class Hangman implements KeyListener {
 	JLabel livesLabel = new JLabel();
 	JLabel solvedLabel = new JLabel();
 	JLabel wordLabel = new JLabel();
+	JLabel hiddenWordLabel = new JLabel();
 	static Stack<String> wordStack = new Stack<>(); // Contains all the words from "instructions.txt"
-
-	String currentWord = wordStack.pop(); // Word that the user will try to guess
-	int numChar = currentWord.length(); // This is the number of characters (useful when using "_")
+	int numChar;// This is the number of characters (useful when using "_")
+	String currentWord = "";
 	String hiddenWord = "";
 
 	public static void main(String[] args) {
@@ -38,9 +38,9 @@ public class Hangman implements KeyListener {
 		// "wordList"
 		try {
 			Scanner sc = new Scanner(new File("src/dictionary.txt"));
-			for (int i = 0; i < numOfWordsInt; i++) {
+			while (sc.hasNext()) {
 				wordList.add(sc.next());
-				System.out.println(wordList.get(i));
+				
 			}
 			sc.close();
 
@@ -53,10 +53,10 @@ public class Hangman implements KeyListener {
 		// The words will be in a random order
 		Random ran = new Random();
 
-		while (wordList.size() > 0) {
+		for (int i = 0; i < numOfWordsInt; i++) {
 			int ranNum = ran.nextInt(wordList.size());
 			wordStack.push(wordList.remove(ranNum));
-			System.out.println(ranNum);
+			//System.out.println(ranNum);
 
 		}
 
@@ -65,7 +65,9 @@ public class Hangman implements KeyListener {
 
 	// Constructor for my UI
 	Hangman() {
-
+		currentWord = wordStack.pop();
+		numChar = currentWord.length();
+	
 		f.add(p);
 
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
@@ -73,6 +75,8 @@ public class Hangman implements KeyListener {
 		p.add(livesLabel);
 		p.add(solvedLabel);
 		p.add(wordLabel);
+		p.add(hiddenWordLabel);
+		f.addKeyListener(this);
 
 		f.setVisible(true);
 		f.pack();
@@ -83,11 +87,11 @@ public class Hangman implements KeyListener {
 			hiddenWord += "_ ";
 
 		}
-
+System.out.println(hiddenWord);
 		guessLabel.setText("Guess a letter.");
-		wordLabel.setText(hiddenWord);
-		livesLabel.setText("You have");
-		wordLabel.setText("You have solved");
+		hiddenWordLabel.setText(hiddenWord);
+		livesLabel.setText("You have"+"lives left");
+		wordLabel.setText("You have solved"+"words");
 
 	}
 
@@ -107,19 +111,27 @@ public class Hangman implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		char keyPressed = e.getKeyChar();
-		String newHiddenWord = ""; 
+		String newHiddenWord = "";
+		System.out.println("hello");
 
 		if (currentWord.contains(Character.toString(keyPressed)) == true) {
 			for (int i = 0; i < numChar; i++) {
-				if(currentWord.charAt(i) == keyPressed) {
-					newHiddenWord+=keyPressed; 
-					l.set(newHiddenWord);
+				if (currentWord.charAt(i) == keyPressed) {
+					newHiddenWord += keyPressed+ " ";
+					//l.set(newHiddenWord);
+				}
+				else {
+					char previousChar = hiddenWord.charAt(i*2);
+					newHiddenWord += previousChar + " ";
 				}
 			}
-
+		hiddenWord = newHiddenWord; 	
+		hiddenWordLabel.setText(newHiddenWord);
 		} else {
-			l.set(newHiddenWord);
+			//l.set(newHiddenWord);
+			
 			lives--;
+			
 		}
 	}
 
