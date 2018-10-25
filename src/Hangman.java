@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 public class Hangman implements KeyListener {
 	int lives = 10;
+	int solvedWords = 0;
 	JFrame f = new JFrame();
 	JPanel p = new JPanel();
 	JLabel guessLabel = new JLabel();
@@ -27,12 +28,25 @@ public class Hangman implements KeyListener {
 	int numChar;// This is the number of characters (useful when using "_")
 	String currentWord = "";
 	String hiddenWord = "";
+	String numOfRounds;
+	String numOfWords;
+	int numOfRoundsInt;
 
 	public static void main(String[] args) {
-		String numOfWordsString = JOptionPane
+	
+		
+
+		Hangman hangman = new Hangman();
+	}
+
+	// Constructor for my UI
+	Hangman() {
+		
+		numOfRounds = JOptionPane
 				.showInputDialog("Welcome to Hangman! How many rounds would you like to play?");
-		int numOfWordsInt = Integer.parseInt(numOfWordsString); // Changes the number string into an number int
-		ArrayList<String> wordList = new ArrayList<>(numOfWordsInt);
+		
+		numOfRoundsInt = Integer.parseInt(numOfRounds); // Changes the number string into an number int
+		ArrayList<String> wordList = new ArrayList<>(numOfRoundsInt);
 
 		// This will read each word from the "instructions.txt" and adds the words into
 		// "wordList"
@@ -40,7 +54,7 @@ public class Hangman implements KeyListener {
 			Scanner sc = new Scanner(new File("src/dictionary.txt"));
 			while (sc.hasNext()) {
 				wordList.add(sc.next());
-				
+
 			}
 			sc.close();
 
@@ -53,21 +67,13 @@ public class Hangman implements KeyListener {
 		// The words will be in a random order
 		Random ran = new Random();
 
-		for (int i = 0; i < numOfWordsInt; i++) {
+		for (int i = 0; i < numOfRoundsInt; i++) {
 			int ranNum = ran.nextInt(wordList.size());
 			wordStack.push(wordList.remove(ranNum));
-			//System.out.println(ranNum);
+			// System.out.println(ranNum);
 
 		}
-
-		Hangman hangman = new Hangman();
-	}
-
-	// Constructor for my UI
-	Hangman() {
-		currentWord = wordStack.pop();
-		numChar = currentWord.length();
-	
+		
 		f.add(p);
 
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
@@ -82,17 +88,32 @@ public class Hangman implements KeyListener {
 		f.pack();
 		f.setSize(600, 600);
 
-		System.out.println("" + currentWord);
+		
+
+		newGame();
+	}
+
+	void gameOver() {
+		if (lives == 0) {
+			JOptionPane.showMessageDialog(null, "GAME OVER!");
+			f.hide();
+		}
+	}
+
+	void newGame() {
+		lives = 0;
+		solvedWords = 0;
+		currentWord = wordStack.pop();
+		numChar = currentWord.length();
+		guessLabel.setText("Guess a letter.");
 		for (int i = 0; i < numChar; i++) {
 			hiddenWord += "_ ";
 
 		}
-System.out.println(hiddenWord);
-		guessLabel.setText("Guess a letter.");
 		hiddenWordLabel.setText(hiddenWord);
-		livesLabel.setText("You have"+"lives left");
-		wordLabel.setText("You have solved"+"words");
-
+		livesLabel.setText("You have 10 lives left");
+		wordLabel.setText("You have solved 0 words");
+		System.out.println("" + currentWord);
 	}
 
 	@Override
@@ -112,26 +133,41 @@ System.out.println(hiddenWord);
 		// TODO Auto-generated method stub
 		char keyPressed = e.getKeyChar();
 		String newHiddenWord = "";
-		System.out.println("hello");
 
 		if (currentWord.contains(Character.toString(keyPressed)) == true) {
 			for (int i = 0; i < numChar; i++) {
 				if (currentWord.charAt(i) == keyPressed) {
-					newHiddenWord += keyPressed+ " ";
-					//l.set(newHiddenWord);
-				}
-				else {
-					char previousChar = hiddenWord.charAt(i*2);
+					newHiddenWord += keyPressed + " ";
+					// l.set(newHiddenWord);
+				} else {
+					char previousChar = hiddenWord.charAt(i * 2);
 					newHiddenWord += previousChar + " ";
 				}
+
 			}
-		hiddenWord = newHiddenWord; 	
-		hiddenWordLabel.setText(newHiddenWord);
+			hiddenWord = newHiddenWord;
+			hiddenWordLabel.setText(newHiddenWord);
+			if (newHiddenWord.contains("_") == false) {
+
+				JOptionPane.showMessageDialog(null, "CORRECT!");
+				wordStack.pop();
+				solvedWords++;
+				if(numOfRoundsInt==solvedWords) {
+					
+					JOptionPane.showMessageDialog(null, "CONGRATUALATIONS! You have completed the rounds!");
+					newGame();
+					
+				}
+			}
+
 		} else {
-			//l.set(newHiddenWord);
-			
+			// l.set(newHiddenWord);
+
 			lives--;
-			
+			livesLabel.setText("You have " + lives + " left");
+			wordLabel.setText("You have solved "+solvedWords+" words");
+			gameOver();
+
 		}
 	}
 
