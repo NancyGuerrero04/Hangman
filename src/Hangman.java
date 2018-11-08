@@ -101,18 +101,19 @@ public class Hangman implements KeyListener {
 	}
 
 	void newGame() {
-		lives = 0;
-		solvedWords = 0;
+		lives = 10;
+		
 		currentWord = wordStack.pop();
 		numChar = currentWord.length();
 		guessLabel.setText("Guess a letter.");
+		hiddenWord = "";
 		for (int i = 0; i < numChar; i++) {
 			hiddenWord += "_ ";
 
 		}
 		hiddenWordLabel.setText(hiddenWord);
 		livesLabel.setText("You have 10 lives left");
-		wordLabel.setText("You have solved 0 words");
+		wordLabel.setText("You have solved " + solvedWords + " words");
 		System.out.println("" + currentWord);
 	}
 
@@ -148,15 +149,17 @@ public class Hangman implements KeyListener {
 			hiddenWord = newHiddenWord;
 			hiddenWordLabel.setText(newHiddenWord);
 			if (newHiddenWord.contains("_") == false) {
-
-				JOptionPane.showMessageDialog(null, "CORRECT!");
-				wordStack.pop();
 				solvedWords++;
+				JOptionPane.showMessageDialog(null, "CORRECT!");
+				
 				if(numOfRoundsInt==solvedWords) {
 					
 					JOptionPane.showMessageDialog(null, "CONGRATUALATIONS! You have completed the rounds!");
-					newGame();
 					
+					
+				}
+				else {
+					newGame();
 				}
 			}
 
